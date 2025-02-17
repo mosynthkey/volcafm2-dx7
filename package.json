@@ -11,7 +11,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
-    "@mdi/font": "7.4.47",
+    "@mdi/font": "^7.4.47",
     "@types/webmidi": "^2.1.0",
     "pinia": "^3.0.1",
     "roboto-fontface": "*",
