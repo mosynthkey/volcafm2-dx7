@@ -12,9 +12,9 @@
 
     <v-dialog v-model="showInfo" max-width="500">
       <v-card>
-        <v-card-title>About volca fm2 to DX7 SysEx</v-card-title>
+        <v-card-title>About</v-card-title>
         <v-card-text>
-          Version 1.0.0. (2025-02-17)<br>
+          Version 1.0.0 (2025-02-17)<br>
           Copyright (c) 2025, Masaki Ono. All rights reserved.
         </v-card-text>
         <v-card-actions>
@@ -26,11 +26,10 @@
 
     <v-main>
       <v-container>
-        <v-card class="mb-4 pa-4" max-width="1200" style="margin: 0 auto;">
+        <v-card class="mb-4 pa-4" style="margin: 0 auto;">
           <div class="text-center mb-4">
             <v-card-title>
               {{ currentStatusAsText }}
-
             </v-card-title>
           </div>
           <v-row justify="center" align="center">
@@ -55,7 +54,7 @@
           v-if="midiStore.connectionState === MIDIConnectionState.DETECTED || midiStore.connectionState === MIDIConnectionState.RECEIVING || midiStore.connectionState === MIDIConnectionState.RECEIVED">
           <v-divider class="my-4" />
 
-          <v-card v-for="(cartridge, index) in 2" :key="index" class="mb-4 pa-4" max-width="1200" style="margin: 0 auto;">
+          <v-card v-for="(cartridge, index) in 2" :key="index" class="mb-4 pa-4" style="margin: 0 auto;">
             <v-row align="center">
               <v-col>
                 <v-card-title>Cartridge {{ index + 1 }}</v-card-title>
@@ -70,10 +69,10 @@
               </v-col>
             </v-row>
             <v-divider class="my-4" />
-            <v-row v-for="row in 4" :key="row" class="mb-2">
+            <v-row v-for="row in 4" :key="row">
               <v-col v-for="col in 8" :key="col" class="text-left"
                 :class="{ 'dimmed-text': !midiStore.programNames[(index * 32) + (row - 1) * 8 + (col - 1)]?.name }">
-                {{ (index * 32) + (row - 1) * 8 + (col - 1) }}:
+                {{ (index * 32) + (row - 1) * 8 + (col - 1) }}:<br>
                 {{ midiStore.programNames[(index * 32) + (row - 1) * 8 + (col - 1)]?.name || '-' }}
               </v-col>
             </v-row>
@@ -153,10 +152,5 @@ const currentStatusAsText = computed(() => {
 
 .dimmed-text {
   opacity: 0.5;
-}
-
-.info-btn {
-  color: #382B2D;
-  text-color: #382B2D;
 }
 </style>
