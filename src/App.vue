@@ -28,19 +28,20 @@
       <v-container>
         <v-card class="mb-4 pa-4" style="margin: 0 auto;">
           <div class="text-center mb-4">
-            <v-card-title>
-              {{ currentStatusAsText }}
-            </v-card-title>
+            <v-card-title v-html="currentStatusAsText"></v-card-title>
           </div>
           <v-row justify="center" align="center">
             <v-col cols="auto">
-              <v-btn v-if="midiStore.connectionState === MIDIConnectionState.NOT_FOUND" class="info-btn"
-                @click="midiStore.detectVolcaFM2">Detect volca fm2</v-btn>
+              <v-btn v-if="midiStore.connectionState === MIDIConnectionState.NOT_FOUND"
+                @click="midiStore.detectVolcaFM2">
+                {{ buttonTexts.detect }}
+              </v-btn>
             </v-col>
             <v-col cols="auto">
               <v-btn
                 v-if="midiStore.connectionState === MIDIConnectionState.DETECTED || midiStore.connectionState === MIDIConnectionState.RECEIVED"
-                @click="midiStore.requestProgramDump">Receive Programs</v-btn>
+                @click="midiStore.requestProgramDump"> {{ buttonTexts.receive }}
+              </v-btn>
             </v-col>
             <v-col cols="auto">
               <v-progress-circular
@@ -63,7 +64,7 @@
                 <v-btn @click="midiStore.downloadSysEx(index === 0)"
                   :disabled="midiStore.connectionState !== MIDIConnectionState.RECEIVED"
                   :class="{ dimmed: midiStore.connectionState !== MIDIConnectionState.RECEIVED }">
-                  Download
+                  {{ buttonTexts.download }}
                   <v-icon>mdi-download</v-icon>
                 </v-btn>
               </v-col>
@@ -94,17 +95,50 @@ onMounted(() => {
   midiStore.initMIDI();
 });
 
-const currentStatusAsText = computed(() => {
-  const CONNECTION_MESSAGES = {
+const userLanguage = navigator.language.startsWith('ja') ? 'ja' : 'en';
+
+const CONNECTION_MESSAGES = {
+  ja: {
+    [MIDIConnectionState.INITIALIZING]: 'MIDIを初期化中...',
+    [MIDIConnectionState.SEARCHING]: 'volca fm2を検索中...',
+    [MIDIConnectionState.NOT_FOUND]: 'volca fm2が見つかりません。<br>1. mac/PCと繋がっているMIDIインターフェースにvolca fm2のMIDI IN/OUTを両方接続してください。<br>2. Chromeブラウザから本アプリにアクセスしてください。<br>3. MIDI接続の許可ダイアログが表示されますので、許可を選択してください。',
+    [MIDIConnectionState.DETECTED]: 'volca fm2が検出されました。',
+    [MIDIConnectionState.RECEIVING]: 'プログラムを受信中...',
+    [MIDIConnectionState.RECEIVED]: 'すべてのプログラムを受信しました！',
+    [MIDIConnectionState.ERROR]: 'MIDIエラーが発生しました。接続を確認してください。',
+  },
+  en: {
     [MIDIConnectionState.INITIALIZING]: 'Initializing MIDI...',
     [MIDIConnectionState.SEARCHING]: 'Searching for volca fm2...',
-    [MIDIConnectionState.NOT_FOUND]: 'volca fm2 not found. Please connect and click the detect button.',
-    [MIDIConnectionState.DETECTED]: 'volca fm2 detected!',
+    [MIDIConnectionState.NOT_FOUND]: 'volca fm2 not found.<br>1. Connect both MIDI IN/OUT of volca fm2 to the MIDI interface connected to your mac/PC.<br>2. Access this app from the Chrome browser.<br>3. A MIDI connection permission dialog will appear, please select allow.',
+    [MIDIConnectionState.DETECTED]: 'volca fm2 detected.',
     [MIDIConnectionState.RECEIVING]: 'Receiving programs...',
     [MIDIConnectionState.RECEIVED]: 'All programs received!',
     [MIDIConnectionState.ERROR]: 'MIDI error occurred. Please check your connection.',
-  } as const;
-  return CONNECTION_MESSAGES[midiStore.connectionState];
+  }
+};
+
+const BUTTON_TEXTS = {
+  ja: {
+    detect: 'volca fm2を検出',
+    receive: 'プログラムを受信',
+    download: 'ダウンロード',
+    close: '閉じる'
+  },
+  en: {
+    detect: 'Detect volca fm2',
+    receive: 'Receive all programs',
+    download: 'Download',
+    close: 'Close'
+  }
+};
+
+const currentStatusAsText = computed(() => {
+  return CONNECTION_MESSAGES[userLanguage][midiStore.connectionState];
+});
+
+const buttonTexts = computed(() => {
+  return BUTTON_TEXTS[userLanguage];
 });
 </script>
 
